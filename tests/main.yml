@@ -1,2 +1,59 @@
 ---
 # Tasks for testing role
+- name: Configure vagrant sandbox environment
+  hosts: localhost
+  roles:
+    - role: amtega.vagrant_presets
+      vagrant_presets_boxes_json_query: >-
+        [? starts_with(name, `centos-6`)
+           || starts_with(name, `centos-7`)
+           || starts_with(name, `fedora-29`)
+           || starts_with(name, `fedora-30`) ]
+  tags:
+    - sandbox
+
+- name: Run idempotence test
+  hosts: localhost
+  roles:
+    - role: amtega.vagrant_sandbox
+      vagrant_sandbox_state: started
+  tags:
+    - sandbox
+
+- name: Test secure_sticky_bit role
+  hosts: vagrant_sandbox_vms
+  pre_tasks:
+
+    - name: Create test directory with world writable permissions
+      file:
+        path: /testdir
+        state: directory
+        mode: 0777
+
+  roles:
+
+    - role: amtega.secure_sticky_bit
+
+  tasks:
+
+    - meta: flush handlers
+
+    - name: Search world writable directories
+      shell: >
+         df --local -P | awk {'if (NR!=1) print $6'} |
+         xargs -I '{}' find '{}' -xdev -type d \( -perm -0002 -a ! -perm -1000 \)
+         2>/dev/null
+      register: secure_sticky_bit_test_result
+      changed_when: secure_sticky_bit_test_result.stdout != ""
+
+  tags:
+    - idempotence
+
+# - name: Cleanup vagrant sandbox
+#   hosts: localhost
+#   roles:
+#     - role: amtega.vagrant_sandbox
+#       vagrant_sandbox_state: absent
+#   tags:
+#     - cleanup
+#     - sandbox

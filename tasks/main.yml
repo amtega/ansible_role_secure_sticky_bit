@@ -1,2 +1,30 @@
 ---
 # Role tasks
+- include_role:
+    name: amtega.check_platform
+  vars:
+    check_platform_distributions:
+      centos: 6
+      fedora: 29
+      rhel: 6
+
+- include_role:
+    name: amtega.packages
+  vars:
+    packages_os:
+      all:
+        all:
+          findutils: present
+
+- block:
+    - name: Search world writable directories
+      shell: >
+         df --local -P | awk {'if (NR!=1) print $6'} |
+         xargs -I '{}' find '{}' -xdev -type d \( -perm -0002 -a ! -perm -1000 \)
+         2>/dev/null
+      register: secure_sticky_bit_check_result
+      changed_when: secure_sticky_bit_check_result.stdout != ""
+      notify: Fix stickty bit
+
+  tags:
+    - role::secure_sticky_bit
