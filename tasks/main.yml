@@ -4,9 +4,9 @@
     name: amtega.check_platform
   vars:
     check_platform_distributions:
-      centos: 6
+      centos: 7
       fedora: 29
-      rhel: 6
+      rhel: 7
 
 - include_role:
     name: amtega.packages
@@ -17,6 +17,7 @@
           findutils: present
 
 - block:
+
     - name: Search world writable directories
       shell: >
          df --local -P | awk {'if (NR!=1) print $6'} |
