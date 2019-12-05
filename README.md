@@ -1,12 +1,6 @@
 # Ansible secure_sticky_bit role
 
-This is an [Ansible](http://www.ansible.com) role which check system filesystem to search world writable directories and fix it whith sticky bit.
-Test and fix 1.1.21 entry of CIS recomendations: https://www.newnettechnologies.com/downloads/cis/Linux/CentOS/CIS_CentOS_Linux_7_Benchmark_v2.1.0.pdf
-
-## Requirements
-
-
-[Ansible 2.7+](http://docs.ansible.com/ansible/latest/intro_installation.html)
+This is an [Ansible](http://www.ansible.com) role to search world writable directories and fix it whith sticky bit.
 
 ## Role Variables
 
@@ -22,7 +16,6 @@ This is an example playbook:
 - hosts: all
   roles:
     - role: amtega.secure_sticky_bit
-
 ```
 
 ## Testing

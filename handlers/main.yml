@@ -1,5 +1,0 @@
----
-# Role handlers
-- name: secure_sticky_bit  fix stickty bit
-  shell: echo "{{ secure_sticky_bit_check_result.stdout }}" | xargs chmod a+t
-  listen: Fix stickty bit

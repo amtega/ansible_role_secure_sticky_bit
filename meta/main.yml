@@ -18,8 +18,10 @@ galaxy_info:
         - 29
         - 30
   galaxy_tags:
-    - yum
-    - repositories
+    - system
+    - security
+    - sitcky
+    - bit
 
 dependencies:
   - role: amtega.check_platform
