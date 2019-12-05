@@ -1,5 +1,6 @@
 ---
 # Role tasks
+
 - include_role:
     name: amtega.check_platform
   vars:
@@ -17,15 +18,18 @@
           findutils: present
 
 - block:
-
     - name: Search world writable directories
       shell: >
-         df --local -P | awk {'if (NR!=1) print $6'} |
-         xargs -I '{}' find '{}' -xdev -type d \( -perm -0002 -a ! -perm -1000 \)
+         df --local -P | awk {'if (NR!=1) print $6'} \
+         | xargs -I '{}' find '{}' -xdev \
+         -type d \( -perm -0002 -a ! -perm -1000 \) \
          2>/dev/null
+      changed_when: no
       register: secure_sticky_bit_check_result
-      changed_when: secure_sticky_bit_check_result.stdout != ""
-      notify: Fix stickty bit
 
+    - name: Setup sticky bit in world writable directories
+      shell: >-
+        echo "{{ secure_sticky_bit_check_result.stdout }}" | xargs chmod a+t
+      when: secure_sticky_bit_check_result.stdout | length != 0
   tags:
     - role::secure_sticky_bit
