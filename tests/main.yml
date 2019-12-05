@@ -1,5 +1,6 @@
 ---
 # Tasks for testing role
+
 - name: Configure docker sandbox environment
   hosts: localhost
   roles:
@@ -22,35 +23,32 @@
 - name: Test secure_sticky_bit role
   hosts: docker_sandbox_containers
   pre_tasks:
-
-    - name: Check if test directory exist
+    - name: Check testing directory
       stat:
         path: /testdir
-      register: secure_sticky_bit_test_dir_result
+      register: test_dir_result
 
-    - name: Create test directory with world writable permissions
+    - name: Setup testing directory
       file:
         path: /testdir
         state: directory
         mode: 0777
-      when: not secure_sticky_bit_test_dir_result.stat.exists
-
+      when: not test_dir_result.stat.exists
   roles:
-
     - role: amtega.secure_sticky_bit
-
   tasks:
-
-    - meta: flush_handlers
-
     - name: Search world writable directories
       shell: >
-         df --local -P | awk {'if (NR!=1) print $6'} |
-         xargs -I '{}' find '{}' -xdev -type d \( -perm -0002 -a ! -perm -1000 \)
+         df --local -P | awk {'if (NR!=1) print $6'} \
+         | xargs -I '{}' find '{}' -xdev \
+         -type d \( -perm -0002 -a ! -perm -1000 \) \
          2>/dev/null
-      register: secure_sticky_bit_test_result
-      changed_when: secure_sticky_bit_test_result.stdout != ""
+      changed_when: no
+      register: test_result
 
+    - name: Assert there are not writable directories without sticky bit
+      assert:
+        that: test_result.stdout | length == 0
   tags:
     - idempotence
 
