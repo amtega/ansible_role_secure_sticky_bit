@@ -7,7 +7,7 @@ galaxy_info:
   description: Fix sticky bit in world writable directories if needed
   company: AMTEGA - Xunta de Galicia
   license: GPLv3 or EUPL
-  min_ansible_version: 2.8
+  min_ansible_version: 2.9
   platforms:
     - name: EL
       versions:
@@ -25,9 +25,15 @@ galaxy_info:
 
 dependencies:
   - role: amtega.check_platform
-    tags:
-      - never
+    vars:
+      check_platform_distributions:
+        centos: 7
+        fedora: 29
+        rhel: 7
 
   - role: amtega.packages
-    tags:
-      - never
+    vars:
+      packages_os:
+        all:
+          all:
+            findutils: present
