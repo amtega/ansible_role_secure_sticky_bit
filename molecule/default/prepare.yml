@@ -1,0 +1,17 @@
+---
+
+- name: Prepare
+  hosts: molecule_hosts
+  gather_facts: no
+  tasks:
+    - name: Check testing directory
+      stat:
+        path: /testdir
+      register: test_dir_result
+
+    - name: Setup testing directory
+      file:
+        path: /testdir
+        state: directory
+        mode: 0777
+      when: not test_dir_result.stat.exists    
