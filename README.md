@@ -25,9 +25,8 @@ Tests are based on [molecule with docker containers](https://molecule.readthedoc
 ```shell
 cd amtega.secure_sticky_bit
 
-molecule test
+molecule test --all
 ```
-
 
 ## License
 
