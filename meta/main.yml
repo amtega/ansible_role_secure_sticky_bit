@@ -2,21 +2,23 @@
 # Role dependencies
 
 galaxy_info:
-  role_name: amtega.secure_sticky_bit
+  role_name: secure_sticky_bit
+  namespace: amtega
   author: José Enrique Mourón Regueira
   description: Fix sticky bit in world writable directories if needed
   company: AMTEGA - Xunta de Galicia
   license: GPLv3 or EUPL
-  min_ansible_version: 2.9
+  min_ansible_version: 2.10
   platforms:
     - name: EL
       versions:
         - 6
         - 7
+        - 8
     - name: Fedora
       versions:
-        - 29
-        - 30
+        - 33
+        - 34
   galaxy_tags:
     - system
     - security
@@ -27,9 +29,9 @@ dependencies:
   - role: amtega.check_platform
     vars:
       check_platform_distributions:
-        centos: 7
-        fedora: 29
-        redhat: 7
+        centos: 6
+        fedora: 33
+        redhat: 6
 
   - role: amtega.packages
     vars:
