@@ -5,7 +5,8 @@
   gather_facts: no
   tasks:
     - name: Search world writable directories
-      shell: >
+      shell: >-
+         set -o pipefail;
          df --local -P | awk {'if (NR!=1) print $6'} \
          | xargs -I '{}' find '{}' -xdev \
          -type d \( -perm -0002 -a ! -perm -1000 \) \
