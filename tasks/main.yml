@@ -1,9 +1,9 @@
 ---
-# Role tasks
 
-- block:
+- name: Setup secure sticky bit
+  block:
     - name: Search world writable directories
-      shell: >-
+      ansible.builtin.shell: >-
          set -o pipefail;
          df --local -P | awk {'if (NR!=1) print $6'} \
          | xargs -I '{}' find '{}' -xdev \
@@ -13,7 +13,7 @@
       register: secure_sticky_bit_check_result
 
     - name: Setup sticky bit in world writable directories
-      shell: >-
+      ansible.builtin.shell: >-
         echo "{{ secure_sticky_bit_check_result.stdout }}" | xargs chmod a+t
       when: secure_sticky_bit_check_result.stdout | length != 0
   tags:

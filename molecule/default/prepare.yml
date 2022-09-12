@@ -5,13 +5,13 @@
   gather_facts: no
   tasks:
     - name: Check testing directory
-      stat:
+      ansible.builtin.stat:
         path: /testdir
       register: test_dir_result
 
     - name: Setup testing directory
-      file:
+      ansible.builtin.file:
         path: /testdir
         state: directory
         mode: 0777
-      when: not test_dir_result.stat.exists    
+      when: not test_dir_result.stat.exists
